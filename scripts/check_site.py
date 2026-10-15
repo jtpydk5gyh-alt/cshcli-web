@@ -29,6 +29,7 @@ class Page(HTMLParser):
 
 
 pages = {path.name: Page(path.read_text(encoding="utf-8")) for path in root.glob("*.html")}
+software_versions = set()
 assert {"index.html", "legal.html"} <= pages.keys()
 for name, page in pages.items():
     assert page.h1 == 1, (name, "H1")
@@ -50,7 +51,17 @@ for name, page in pages.items():
     assert "chatgpt.site" not in text, (name, "Origen antiguo")
     assert "noindex" not in text.lower(), (name, "No indexable")
     for data in re.findall(r'<script type="application/ld\+json">(.*?)</script>', text, re.S):
-        json.loads(data)
+        graph = json.loads(data).get("@graph", [])
+        software_versions.update(item["version"] for item in graph if item.get("@type") == "SoftwareSourceCode")
+
+assert len(software_versions) == 1, "Versión estructurada ausente o ambigua"
+version = software_versions.pop()
+for name, text, pattern in [
+    ("index.html", (root / "index.html").read_text(encoding="utf-8"), r"Piloto local v([0-9]+\.[0-9]+\.[0-9]+)"),
+    ("legal.html", (root / "legal.html").read_text(encoding="utf-8"), r"CSHCLI ([0-9]+\.[0-9]+\.[0-9]+)"),
+    ("README.md", (root.parent / "README.md").read_text(encoding="utf-8"), r"CSHCLI ([0-9]+\.[0-9]+\.[0-9]+)"),
+]:
+    assert set(re.findall(pattern, text)) == {version}, (name, "Versiones incoherentes", version)
 
 css = (root / "styles.css").read_text(encoding="utf-8")
 for asset in re.findall(r"url\(['\"]?([^)'\"]+)", css):
