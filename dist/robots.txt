@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jtpydk5gyh-alt.github.io/cshcli-web/sitemap.xml
