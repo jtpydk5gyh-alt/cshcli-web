@@ -32,7 +32,7 @@ cshcli --version
 
 The command installs the current `main` branch of the CLI repository. Use the [website](https://jtpydk5gyh-alt.github.io/cshcli-web/#instalar) for platform-specific commands and virtual environment instructions.
 
-**Project status:** CSHCLI 0.1.0 is a local pilot. AI access requires the user's own provider credentials or a compatible official CLI. Remote collaboration is not deployed, and file reservations are cooperative. See the [CLI documentation](https://github.com/jtpydk5gyh-alt/cshcli/blob/main/README.md) for capabilities and current limitations.
+**Project status:** CSHCLI 0.2.0 is a local pilot. AI access requires the user's own provider credentials or a compatible official CLI. Remote collaboration is not deployed, and file reservations are cooperative. See the [CLI documentation](https://github.com/jtpydk5gyh-alt/cshcli/blob/main/README.md) for capabilities and current limitations.
 
 ## Develop locally
 
@@ -76,6 +76,14 @@ For visual changes, also verify narrow and desktop viewports, keyboard navigatio
 | `dist/sitemap.xml` | Public page URLs |
 | `scripts/check_site.py` | Dependency-free site validation |
 | `.github/workflows/pages.yml` | Pull request checks and GitHub Pages deployment |
+
+## Search visibility
+
+Product information and direct answers are available in static HTML, with stable section links and structured data that matches the visible content. The website identifies the official source repository, documentation, current pilot version, requirements, and limitations so search engines and assistants can cite the project accurately.
+
+Google's [AI search guidance](https://developers.google.com/search/docs/appearance/ai-features) uses the same crawlability and content fundamentals as traditional search. [OpenAI's crawler documentation](https://developers.openai.com/api/docs/bots) distinguishes search discovery from model training. Search placement and citations are determined by each service.
+
+On a GitHub Pages project URL, the robots file in this repository is served below `/cshcli-web/`. Crawler rules apply at the host root; this file does not control host-wide crawler access. The published sitemap can be submitted in Search Console after verifying the property. A future custom domain would provide a site root for crawler configuration.
 
 ## Contribute and publish
 
