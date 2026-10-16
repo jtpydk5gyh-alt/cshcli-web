@@ -20,12 +20,46 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 24
+          cache: npm
       - run: node --check dist/app.js
       - run: python3 scripts/check_site.py
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+      - run: sh -n dist/install.sh
+
+  installer-check:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install on Linux
+        if: runner.os == 'Linux'
+        env:
+          CSHCLI_INSTALL_DIR: ${{ runner.temp }}/cshcli-install
+          CSHCLI_BIN_DIR: ${{ runner.temp }}/cshcli-bin
+        run: |
+          sh dist/install.sh
+          "$CSHCLI_BIN_DIR/cshcli" --version
+      - name: Install on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          CSHCLI_INSTALL_DIR: ${{ runner.temp }}/cshcli-install
+        run: |
+          . ./dist/install.ps1
+          cshcli --version
 
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: site-check
+    needs: [site-check, installer-check]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -45,3 +79,7 @@ jobs:
       - name: Publish
         id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346
+      - name: Verify published files and 404
+        run: python3 scripts/check_deploy.py "$PAGE_URL"
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}

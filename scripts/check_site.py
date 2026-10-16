@@ -1,6 +1,7 @@
 from html.parser import HTMLParser
 import json
 from pathlib import Path
+import posixpath
 import re
 from urllib.parse import urlsplit
 import xml.etree.ElementTree as ET
@@ -28,7 +29,7 @@ class Page(HTMLParser):
                 self.links.append(attrs[key])
 
 
-pages = {path.name: Page(path.read_text(encoding="utf-8")) for path in root.glob("*.html")}
+pages = {path.relative_to(root).as_posix(): Page(path.read_text(encoding="utf-8")) for path in root.rglob("*.html")}
 software_versions = set()
 assert {"index.html", "legal.html"} <= pages.keys()
 for name, page in pages.items():
@@ -38,18 +39,23 @@ for name, page in pages.items():
         parts = urlsplit(link)
         if parts.scheme or parts.netloc:
             continue
-        target = parts.path or name
-        if target in ("/", "./"):
-            target = "index.html"
-        assert not target.startswith("/"), (name, "Ruta fuera del proyecto", link)
+        if parts.path.startswith("/"):
+            assert parts.path.startswith(urlsplit(origin).path), (name, "Ruta fuera del proyecto", link)
+            target = parts.path[len(urlsplit(origin).path):]
+        else:
+            target = posixpath.join(posixpath.dirname(name), parts.path) if parts.path else name
+        target = posixpath.normpath(target)
+        assert target != ".." and not target.startswith("../"), (name, "Ruta fuera del proyecto", link)
+        if (root / target).is_dir():
+            target = posixpath.normpath(posixpath.join(target, "index.html"))
         assert (root / target).is_file(), (name, "Archivo ausente", link)
         if parts.fragment:
-            assert parts.fragment in pages[target].ids, (name, "Ancla ausente", link)
+            assert target in pages and parts.fragment in pages[target].ids, (name, "Ancla ausente", link)
     text = (root / name).read_text(encoding="utf-8")
-    expected = origin if name == "index.html" else origin + name
+    expected = origin + (name.removesuffix("index.html") if name.endswith("index.html") else name)
     assert f'rel="canonical" href="{expected}"' in text, (name, "Canonical")
     assert "chatgpt.site" not in text, (name, "Origen antiguo")
-    assert "noindex" not in text.lower(), (name, "No indexable")
+    assert ("noindex" in text.lower()) == (name == "404.html"), (name, "Indexabilidad incorrecta")
     for data in re.findall(r'<script type="application/ld\+json">(.*?)</script>', text, re.S):
         graph = json.loads(data).get("@graph", [])
         software_versions.update(item["version"] for item in graph if item.get("@type") == "SoftwareSourceCode")
@@ -58,6 +64,7 @@ assert len(software_versions) == 1, "Versión estructurada ausente o ambigua"
 version = software_versions.pop()
 for name, text, pattern in [
     ("index.html", (root / "index.html").read_text(encoding="utf-8"), r"Piloto local v([0-9]+\.[0-9]+\.[0-9]+)"),
+    ("en/index.html", (root / "en/index.html").read_text(encoding="utf-8"), r"Local pilot v([0-9]+\.[0-9]+\.[0-9]+)"),
     ("legal.html", (root / "legal.html").read_text(encoding="utf-8"), r"CSHCLI ([0-9]+\.[0-9]+\.[0-9]+)"),
     ("README.md", (root.parent / "README.md").read_text(encoding="utf-8"), r"CSHCLI ([0-9]+\.[0-9]+\.[0-9]+)"),
 ]:
@@ -69,7 +76,10 @@ for asset in re.findall(r"url\(['\"]?([^)'\"]+)", css):
     assert (root / asset).is_file(), ("Asset CSS ausente", asset)
 
 locations = {element.text for element in ET.parse(root / "sitemap.xml").iter("{http://www.sitemaps.org/schemas/sitemap/0.9}loc")}
-assert locations == {origin, origin + "legal.html"}, "Sitemap incoherente"
+expected_locations = {origin + (name.removesuffix("index.html") if name.endswith("index.html") else name) for name in pages if name != "404.html"}
+assert locations == expected_locations, ("Sitemap incoherente", locations ^ expected_locations)
 assert "Sitemap: " + origin + "sitemap.xml" in (root / "robots.txt").read_text()
-assert 'class="motion-paused"' in (root / "index.html").read_text(encoding="utf-8")
+for name in pages:
+    if name.endswith("index.html"):
+        assert 'class="motion-paused"' in (root / name).read_text(encoding="utf-8"), (name, "Movimiento inicial")
 print(f"site-check: {len(pages)} páginas, enlaces, assets, SEO y movimiento inicial correctos")

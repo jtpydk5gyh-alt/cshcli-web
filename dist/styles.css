@@ -134,6 +134,11 @@ svg {
   color:#bcb8c8;
   font-size:13px
 }
+.header nav a {
+  display:inline-flex;
+  align-items:center;
+  min-height:44px;
+}
 .header nav a:hover,.text-link:hover,.footer a:hover {
   color:white
 }
@@ -276,6 +281,7 @@ h2 em {
   border-radius:7px;
   font-size:13px;
   font-weight:550;
+  min-height:44px;
   transition:transform .2s,background .2s,box-shadow .2s
 }
 .button:hover {
@@ -471,7 +477,8 @@ h2 em {
   border:0;
   background:none;
   font-size:11px;
-  padding:0;
+  padding:0 4px;
+  min-height:44px;
   color:#9e8eaf
 }
 .console-heading button:hover {
@@ -537,7 +544,8 @@ pre,code {
   background:#11132085;
   border-radius:4px;
   padding:4px 8px;
-  font-size:9px;
+  min-height:44px;
+  font-size:12px;
   color:#d2c8df
 }
 .providers {
@@ -686,7 +694,7 @@ pre,code {
   margin:24px 0
 }
 .text-link {
-  font-size:11px;
+  font-size:13px;
   color:#c2afd8
 }
 .text-link span {
@@ -707,7 +715,8 @@ pre,code {
   border-bottom:1px solid var(--border)
 }
 .platform {
-  font-size:11px;
+  font-size:13px;
+  min-width:44px;
   background:none;
   border:0;
   border-bottom:2px solid transparent;
@@ -756,8 +765,8 @@ pre,code {
   background:#ffffff06;
   border:1px solid #ffffff0d;
   border-radius:4px;
-  min-width:32px;
-  min-height:32px;
+  min-width:44px;
+  min-height:44px;
   margin-top:-4px;
   padding:7px;
   transition:background .2s
@@ -816,7 +825,7 @@ pre,code {
 }
 .install-panel details {
   padding:0 20px 19px;
-  font-size:10px;
+  font-size:12px;
   color:#a898ba
 }
 .install-panel details[open] {
@@ -824,16 +833,18 @@ pre,code {
   padding-top:14px
 }
 .install-panel summary {
-  font-size:10px;
+  font-size:13px;
+  min-height:44px;
+  padding-block:10px;
   color:#bdabd2;
   cursor:pointer
 }
 .install-panel details p {
-  font-size:10px;
+  font-size:13px;
   line-height:1.8
 }
 .install-panel pre {
-  font-size:10px;
+  font-size:12px;
   background:#0e0b16;
   padding:12px;
   border-radius:5px;
@@ -1073,9 +1084,6 @@ pre,code {
     height:76px;
     padding:0 22px
   }
-  .header nav {
-    display:none
-  }
   .brand {
     font-size:23px
   }
@@ -1088,7 +1096,7 @@ pre,code {
     min-height:805px
   }
   .release {
-    font-size:9px;
+    font-size:11px;
     gap:8px
   }
   h1 {
@@ -1097,7 +1105,7 @@ pre,code {
     margin-top:27px
   }
   .hero-copy>p {
-    font-size:12px;
+    font-size:14px;
     line-height:1.9;
     max-width:340px;
     margin:auto
@@ -1115,7 +1123,7 @@ pre,code {
   }
   .hero-meta {
     gap:7px;
-    font-size:8px;
+    font-size:11px;
     flex-wrap:wrap;
     max-width:300px;
     margin:19px auto 0
@@ -1141,26 +1149,33 @@ pre,code {
   }
   .demo-tab {
     justify-content:center;
-    padding:6px;
-    gap:6px;
-    font-size:9px
+    padding:6px 4px;
+    flex:1;
+    min-width:0;
+    min-height:44px;
+    font-size:12px
   }
   .demo-tab>span:first-child {
-    font-size:14px
+    display:none
   }
   .terminal-bar {
     height:38px;
     padding-inline:12px
   }
   .terminal-title {
-    font-size:8px;
-    left:48%
+    position:static;
+    transform:none;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    flex:1;
+    font-size:11px
   }
   .terminal-live {
-    font-size:8px
+    font-size:10px;
+    white-space:nowrap
   }
   .window-dots {
-    gap:4px
+    display:none
   }
   .window-dots i {
     width:6px;
@@ -1171,7 +1186,7 @@ pre,code {
     flex:1
   }
   .console-heading {
-    font-size:8px;
+    font-size:11px;
     gap:8px
   }
   #demo-output {
@@ -1184,7 +1199,7 @@ pre,code {
   .motion-control {
     bottom:8px;
     right:12px;
-    font-size:8px
+    font-size:12px
   }
   .providers {
     padding:33px 24px
@@ -1206,7 +1221,7 @@ pre,code {
     font-size:18px
   }
   .providers>small {
-    font-size:8px;
+    font-size:12px;
     max-width:300px;
     margin:20px auto 0
   }
@@ -1221,7 +1236,7 @@ pre,code {
     font-size:37px
   }
   .eyebrow {
-    font-size:8px
+    font-size:11px
   }
   .section-heading>p {
     font-size:12px
@@ -1249,7 +1264,7 @@ pre,code {
   .feature-number {
     display:block;
     padding-top:2px;
-    font-size:8px
+    font-size:11px
   }
   .feature-grid h3 {
     margin-top:8px;
@@ -1258,11 +1273,11 @@ pre,code {
   .feature-grid p {
     max-width:none;
     min-height:0;
-    font-size:12px;
+    font-size:14px;
     margin-bottom:14px
   }
   .feature-grid code {
-    font-size:9px
+    font-size:12px
   }
   .install,.faq {
     grid-template-columns:1fr;
@@ -1284,7 +1299,7 @@ pre,code {
   .install-copy>p {
     max-width:none;
     margin:18px 0;
-    font-size:12px
+    font-size:14px
   }
   .install-tabs {
     padding-inline:16px;
@@ -1297,13 +1312,14 @@ pre,code {
     font-size:9px
   }
   .install-note,.environment-note {
-    margin-inline:16px
+    margin-inline:16px;
+    font-size:12px
   }
   .next-steps {
     padding-inline:16px
   }
   .next-steps>div>span:nth-child(2) {
-    font-size:9px
+    font-size:12px
   }
   .next-steps code {
     font-size:9px
@@ -1327,7 +1343,7 @@ pre,code {
     order:3;
     width:100%;
     margin:0;
-    font-size:10px
+    font-size:12px
   }
   .footer>div {
     gap:15px;
@@ -1348,7 +1364,7 @@ pre,code {
 }
 
 .hero {
-  padding-bottom:38px;
+  padding-bottom:72px;
 }
 .terminal {
   border-radius:11px;
@@ -1363,8 +1379,23 @@ pre,code {
   visibility:hidden;
 }
 @media(max-width:850px) {
+  .header {
+    height:auto;
+    min-height:92px;
+    flex-wrap:wrap;
+    gap:8px 20px;
+    padding:16px 22px;
+  }
   .header nav {
-    display:none;
+    display:flex;
+    order:3;
+    width:100%;
+    flex-wrap:wrap;
+    gap:0 20px;
+    font-size:13px;
+  }
+  .header .brand,.github-link {
+    min-height:44px;
   }
 }
 @media(max-width:700px) {
@@ -1381,7 +1412,7 @@ pre,code {
     font-size:12px;
   }
   .command-box code,.next-steps code {
-    font-size:11px;
+    font-size:12px;
   }
   .console-status {
     font-size:10px;
@@ -1462,6 +1493,69 @@ pre,code {
 }
 .legal-back {
   margin-top:45px;
+}
+.guide-code {
+  margin:18px 0;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:#15121f;
+}
+.guide-code summary {
+  padding:12px 16px;
+  color:#d6c0ee;
+  cursor:pointer;
+  min-height:44px;
+}
+.guide-code pre {
+  margin:0;
+  padding:16px;
+  border-top:1px solid var(--border);
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  line-height:1.8;
+}
+.guide-code code {
+  font-size:13px;
+}
+.video-guide p {
+  padding:0 16px;
+  color:#b9afc7;
+}
+.video-guide video {
+  display:block;
+  width:100%;
+  height:auto;
+  border-radius:0 0 8px 8px;
+}
+.guide-wrap .legal-nav a {
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+}
+.guide-wrap kbd {
+  padding:2px 6px;
+  border:1px solid #ffffff28;
+  border-radius:4px;
+  background:#1f1b2e;
+}
+.error-wrap {
+  max-width:780px;
+  margin:50px auto;
+  padding:40px 24px;
+  text-align:center;
+}
+.error-wrap h1 {
+  font-size:clamp(48px,9vw,86px);
+}
+.error-wrap p {
+  color:#b9afc7;
+  max-width:460px;
+  margin:auto;
+}
+.error-wrap .text-link {
+  display:inline-block;
+  margin-top:28px;
+  padding:12px;
 }
 @media(max-width:700px) {
   .footer .footer-links {
