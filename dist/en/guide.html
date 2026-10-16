@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100f19">
+  <meta name="description" content="Your first CSHCLI project: install the CLI, start the local coordinator, create an identity and save a shared decision from PowerShell or Bash.">
+  <link rel="canonical" href="https://jtpydk5gyh-alt.github.io/cshcli-web/en/guide.html">
+  <link rel="alternate" hreflang="es" href="https://jtpydk5gyh-alt.github.io/cshcli-web/guide.html">
+  <link rel="alternate" hreflang="en" href="https://jtpydk5gyh-alt.github.io/cshcli-web/en/guide.html">
+  <link rel="alternate" hreflang="x-default" href="https://jtpydk5gyh-alt.github.io/cshcli-web/guide.html">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <meta property="og:title" content="Your first project · CSHCLI">
+  <meta property="og:description" content="A practical guide to installing CSHCLI and trying projects, memory and file leases on your machine.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://jtpydk5gyh-alt.github.io/cshcli-web/en/guide.html">
+  <meta property="og:image" content="https://jtpydk5gyh-alt.github.io/cshcli-web/assets/night-sky.webp">
+  <title>Your first project with CSHCLI · Getting started</title>
+</head>
+<body class="guide-page">
+  <a class="skip" href="#contenido">Skip to content</a>
+  <header class="header">
+    <a class="brand" href="./" aria-label="CSHCLI, home"><span class="brand-mark" aria-hidden="true">&gt;_</span>csh<span class="brand-light">cli</span><span class="brand-dot">.</span></a>
+    <nav aria-label="Main navigation"><a href="./#instalar">Installation</a><a href="guide.html" aria-current="page">First project</a><a href="../guide.html" lang="es" hreflang="es">Español</a></nav>
+    <a class="github-link" href="https://github.com/jtpydk5gyh-alt/cshcli" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+  </header>
+  <main class="legal-wrap guide-wrap" id="contenido">
+    <div class="legal-heading"><span class="eyebrow">FROM INSTALLATION TO YOUR FIRST PROJECT</span><h1>A beginning,<br>with context.</h1><p>Try the CSHCLI 0.7.0 local workflow: create a project, save a decision and acquire a file lease. You do not need an AI account for these steps.</p><p class="legal-date">Requires Python 3.11+ with pip and two terminals on the same machine for the manual workflow.</p><p>Prefer guided setup? After installation, run <code>&amp; $cli start</code> in PowerShell or <code>"$cli" start</code> in Bash. The assistant configures your session and project and starts the coordinator when needed. You can use it without running <code>serve</code> separately. The walkthrough below explains the manual commands.</p></div>
+    <details class="guide-code video-guide"><summary>Watch the website walkthrough</summary><p>Silent video with Spanish on-screen text. It shows changing the preview, choosing Windows or Linux and opening this guide. The website terminal examples are illustrative; they do not execute the CLI.</p><video controls preload="none" width="1280" height="720" poster="../assets/night-sky.webp" aria-label="CSHCLI website walkthrough: installation and first project"><source src="../assets/demo.webm" type="video/webm">Video playback is unavailable. Follow the written steps in this guide instead.</video></details>
+    <nav class="legal-nav" aria-label="Guide steps"><a href="#preparar">1. Prepare</a><a href="#coordinador">2. Coordinator</a><a href="#proyecto">3. Project</a><a href="#memoria">4. Memory</a><a href="#reserva">5. Lease</a><a href="#siguiente">Next step</a></nav>
+    <section class="legal-section" id="preparar" aria-labelledby="preparar-title"><span class="eyebrow">01 / YOUR OWN ENVIRONMENT</span><h2 id="preparar-title">Prepare your workspace.</h2><p>Open a working folder and run the block for your system. A virtual environment keeps this installation separate from your other projects. The package downloads from the GitHub <code>main</code> branch, which may change.</p>
+      <details class="guide-code" open><summary>Windows · PowerShell</summary><pre><code>py -m venv .venv
+.venv\Scripts\python -m pip install "https://github.com/jtpydk5gyh-alt/cshcli/archive/refs/heads/main.zip"
+$cli = (Resolve-Path .venv\Scripts\cshcli.exe).Path
+&amp; $cli --version</code></pre></details>
+      <details class="guide-code"><summary>macOS and Linux · Bash</summary><pre><code>python3 -m venv .venv
+.venv/bin/python -m pip install "https://github.com/jtpydk5gyh-alt/cshcli/archive/refs/heads/main.zip"
+cli="$PWD/.venv/bin/cshcli"
+"$cli" --version</code></pre></details>
+      <p>The version prints when installation finishes. If the <code>venv</code> module is missing on Linux, install the package for your distribution. If you use Git in this folder, exclude <code>.venv/</code> and <code>.cshcli/</code> before saving files to the repository.</p>
+    </section>
+    <section class="legal-section" id="coordinador" aria-labelledby="coordinador-title"><span class="eyebrow">02 / FIRST TERMINAL</span><h2 id="coordinador-title">Start the coordinator.</h2><p>Continue in the same terminal. Leave it open while you follow the guide: this process handles requests at <code>http://127.0.0.1:8765</code> and stores coordination data in <code>.cshcli/coordinator.sqlite3</code>, inside your current folder.</p>
+      <details class="guide-code" open><summary>Windows · PowerShell</summary><pre><code>&amp; $cli serve</code></pre></details>
+      <details class="guide-code"><summary>macOS and Linux · Bash</summary><pre><code>"$cli" serve</code></pre></details>
+      <p>The coordinator only accepts local connections. If your coordinator already occupies the port, use that process; if another application uses it, consult <code>cshcli serve --help</code> and set the same URL in both terminals with <code>CSHCLI_URL</code>.</p>
+    </section>
+    <section class="legal-section" id="proyecto" aria-labelledby="proyecto-title"><span class="eyebrow">03 / SECOND TERMINAL</span><h2 id="proyecto-title">Your identity. Your project.</h2><p>Open another terminal in the same working folder. Choose an unregistered local alias and run the block once. The token is captured in a variable without printing it. <code>CSHCLI_TOKEN</code> identifies you to the coordinator; it is separate from your AI provider keys.</p>
+      <details class="guide-code" open><summary>Windows · PowerShell</summary><pre><code>$cli = (Resolve-Path .venv\Scripts\cshcli.exe).Path
+$identity = &amp; $cli auth register my-alias | ConvertFrom-Json
+$env:CSHCLI_TOKEN = $identity.token
+Remove-Variable identity
+$project = &amp; $cli project create my-project | ConvertFrom-Json
+$projectId = $project.id
+&amp; $cli project list</code></pre></details>
+      <details class="guide-code"><summary>macOS and Linux · Bash</summary><pre><code>cli="$PWD/.venv/bin/cshcli"
+export CSHCLI_TOKEN="$("$cli" auth register my-alias | python3 -c 'import json,sys; print(json.load(sys.stdin)["token"])')"
+project_id="$("$cli" project create my-project | python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])')"
+"$cli" project list</code></pre></details>
+      <p>You should see <code>my-project</code> in the list. Keep your token in a secure manager if you need to reuse this identity: it is only returned during registration, and the pilot does not offer recovery or rotation. The environment variable lasts for this session; do not publish the token in screenshots, issues, prompts or versioned files. If you receive <code>name_taken</code>, choose another alias or use the token you saved for that identity.</p>
+    </section>
+    <section class="legal-section" id="memoria" aria-labelledby="memoria-title"><span class="eyebrow">04 / A DECISION THAT LASTS</span><h2 id="memoria-title">Save the context.</h2><p>In the second terminal, create a decision and read it back. The value <code>0</code> means this is a new entry. To update it, use the latest version you read; an old version causes a conflict instead of overwriting another change.</p>
+      <details class="guide-code" open><summary>Windows · PowerShell</summary><pre><code>&amp; $cli memory put $projectId architecture --content "One worktree per task" --expected-version 0
+&amp; $cli memory list $projectId
+&amp; $cli memory put $projectId architecture --content "One worktree and one branch per task" --expected-version 1
+&amp; $cli memory list $projectId</code></pre></details>
+      <details class="guide-code"><summary>macOS and Linux · Bash</summary><pre><code>"$cli" memory put "$project_id" architecture --content "One worktree per task" --expected-version 0
+"$cli" memory list "$project_id"
+"$cli" memory put "$project_id" architecture --content "One worktree and one branch per task" --expected-version 1
+"$cli" memory list "$project_id"</code></pre></details>
+      <p>The final result includes the decision with <code>version: 2</code>. This memory holds shared project text, so save useful decisions and avoid credentials or private information.</p>
+    </section>
+    <section class="legal-section" id="reserva" aria-labelledby="reserva-title"><span class="eyebrow">05 / COORDINATION WITH EXPIRY</span><h2 id="reserva-title">Acquire a file lease.</h2><p>This example leases the relative name <code>file:src/app.py</code> for 120 seconds, displays the lease and releases it. It does not create or modify that file. Run the whole block before the lease expires.</p>
+      <details class="guide-code" open><summary>Windows · PowerShell</summary><pre><code>$leases = &amp; $cli lease acquire $projectId my-agent file:src/app.py --ttl 120 | ConvertFrom-Json
+&amp; $cli lease list $projectId
+&amp; $cli lease release $projectId $leases[0].id $leases[0].fence
+&amp; $cli events $projectId</code></pre></details>
+      <details class="guide-code"><summary>macOS and Linux · Bash</summary><pre><code>lease_json="$("$cli" lease acquire "$project_id" my-agent file:src/app.py --ttl 120)"
+lease_id="$(printf '%s' "$lease_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)[0]["id"])')"
+fence="$(printf '%s' "$lease_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)[0]["fence"])')"
+"$cli" lease list "$project_id"
+"$cli" lease release "$project_id" "$lease_id" "$fence"
+"$cli" events "$project_id"</code></pre></details>
+      <p>Releasing the lease returns <code>released: true</code>. Leases are cooperative: the coordinator prevents incompatible acquisitions, but cannot stop an external editor from writing to the file. If the lease expires, acquire a new one and use its new values.</p>
+    </section>
+    <section class="legal-section" id="siguiente" aria-labelledby="siguiente-title"><span class="eyebrow">YOU HAVE A STARTING POINT</span><h2 id="siguiente-title">Continue at your own pace.</h2><p>Run <code>cshcli provider status</code> to check your providers. Chat requires your own compatible account or API key and may incur costs; the conversational entry point, <code>cshcli</code>, can include a capped index of your current folder and read a text file when you explicitly request <code>/ver &lt;path&gt;</code>. It reads files without executing them. Follow the <a href="https://github.com/jtpydk5gyh-alt/cshcli/blob/main/docs/PROVIDERS.md" target="_blank" rel="noopener noreferrer">provider guide</a> to choose the right integration.</p><p>To try invitations between identities on this machine, see the <a href="https://github.com/jtpydk5gyh-alt/cshcli/blob/main/README.md#create-a-project-and-invite-someone" target="_blank" rel="noopener noreferrer">invitation workflow</a>. There is no service between machines, execution sandbox or configured deployment provider yet. The <a href="https://github.com/jtpydk5gyh-alt/cshcli/blob/main/docs/STATUS.md" target="_blank" rel="noopener noreferrer">project status</a> describes the verified limits.</p><p>When you finish, press <kbd>Ctrl</kbd> + <kbd>C</kbd> in the first terminal to stop the server. In the second, clear the session token with <code>Remove-Item Env:CSHCLI_TOKEN</code> in PowerShell or <code>unset CSHCLI_TOKEN</code> in Bash. Local data remains in SQLite; keep that folder if you want to preserve your projects.</p></section>
+    <div class="legal-back"><a class="button primary" href="./">Back to CSHCLI <span aria-hidden="true">→</span></a></div>
+  </main>
+  <footer class="footer section-wrap"><a class="brand" href="./" aria-label="CSHCLI, home"><span class="brand-mark" aria-hidden="true">&gt;_</span>csh<span class="brand-light">cli</span><span class="brand-dot">.</span></a><p>Built to create, together.</p><div class="footer-links"><a href="../guide.html" lang="es" hreflang="es">Español</a><a href="../legal.html#terminos" hreflang="es">Terms (Spanish)</a><a href="../legal.html#privacidad" hreflang="es">Privacy (Spanish)</a><a href="https://github.com/jtpydk5gyh-alt/cshcli/issues" target="_blank" rel="noopener noreferrer">Get help on GitHub ↗</a></div></footer>
+</body>
+</html>
